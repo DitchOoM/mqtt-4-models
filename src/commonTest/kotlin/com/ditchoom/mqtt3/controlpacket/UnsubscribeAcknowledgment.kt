@@ -1,0 +1,21 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
+package com.ditchoom.mqtt3.controlpacket
+
+import com.ditchoom.buffer.allocateNewBuffer
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class UnsubscribeAcknowledgmentTests {
+    private val packetIdentifier = 2
+
+    @Test
+    fun serializeDeserializeDefault() {
+        val buffer = allocateNewBuffer(4u)
+        val actual = UnsubscribeAcknowledgment(packetIdentifier)
+        actual.serialize(buffer)
+        buffer.resetForRead()
+        val expected = ControlPacketV4.from(buffer)
+        assertEquals(expected, actual)
+    }
+}

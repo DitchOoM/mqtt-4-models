@@ -1,0 +1,23 @@
+@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
+
+package com.ditchoom.mqtt3.controlpacket
+
+import com.ditchoom.buffer.allocateNewBuffer
+import com.ditchoom.mqtt.controlpacket.MqttUtf8String
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class UnsubscribeRequestTests {
+    private val packetIdentifier = 2
+
+    @Test
+    fun basicTest() {
+        val buffer = allocateNewBuffer(17u)
+        val unsub = UnsubscribeRequest(packetIdentifier, listOf(MqttUtf8String("yolo"), MqttUtf8String("yolo1")))
+        unsub.serialize(buffer)
+        buffer.resetForRead()
+        val result = ControlPacketV4.from(buffer) as UnsubscribeRequest
+        assertEquals(result.topics.first().getValueOrThrow().toString(), "yolo")
+        assertEquals(result.topics[1].getValueOrThrow().toString(), "yolo1")
+    }
+}
