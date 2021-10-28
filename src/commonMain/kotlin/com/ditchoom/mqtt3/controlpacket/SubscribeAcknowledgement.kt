@@ -35,7 +35,7 @@ data class SubscribeAcknowledgement(override val packetIdentifier: Int, val payl
         fun from(buffer: ReadBuffer, remainingLength: UInt): SubscribeAcknowledgement {
             val packetIdentifier = buffer.readUnsignedShort()
             val returnCodes = mutableListOf<ReasonCode>()
-            while (returnCodes.size.toUInt() < remainingLength - buffer.variableByteSize(remainingLength) - 1u) {
+            while (returnCodes.size.toUInt() < remainingLength - variableByteSize(remainingLength) - 1u) {
                 val reasonCode = when (val reasonCodeByte = buffer.readUnsignedByte()) {
                     GRANTED_QOS_0.byte -> GRANTED_QOS_0
                     GRANTED_QOS_1.byte -> GRANTED_QOS_1
