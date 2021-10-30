@@ -239,7 +239,8 @@ data class PublishMessage(
                 val array = buffer.readByteArray(size)
                 val payloadBuffer = allocateNewBuffer(size)
                 payloadBuffer.write(array)
-                payloadBuffer.resetForRead()
+                payloadBuffer.position(0)
+                payloadBuffer.setLimit(size.toInt())
                 payloadBuffer
             } else {
                 null
