@@ -155,7 +155,7 @@ class SubscribeRequestTest {
 
     @Test
     fun serializeDeserialize() {
-        val subscribeRequest = SubscribeRequest(2, listOf(Subscription(Filter("test"))))
+        val subscribeRequest = SubscribeRequest(2, setOf(Subscription(Filter("test"))))
         assertEquals(subscribeRequest.packetIdentifier, 2)
         val subs = subscribeRequest.subscriptions
         val firstSub = subs.first()

@@ -4,11 +4,11 @@ package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.PlatformBuffer
 import com.ditchoom.buffer.ReadBuffer
-import com.ditchoom.mqtt.controlpacket.ControlPacketFactory
-import com.ditchoom.mqtt.controlpacket.IPublishMessage
-import com.ditchoom.mqtt.controlpacket.QualityOfService
+import com.ditchoom.mqtt.controlpacket.*
+import com.ditchoom.mqtt.controlpacket.format.ReasonCode
 
 object ControlPacketV4Factory : ControlPacketFactory {
+
     override fun from(buffer: ReadBuffer, byte1: UByte, remainingLength: UInt) =
         ControlPacketV4.from(buffer, byte1, remainingLength)
 
@@ -36,4 +36,18 @@ object ControlPacketV4Factory : ControlPacketFactory {
         val variableHeader = PublishMessage.VariableHeader(topicName, packetIdentifier)
         return PublishMessage(fixedHeader, variableHeader, payload)
     }
+
+    override fun subscribe(
+        packetIdentifier: Int,
+        subscriptions: Set<ISubscription>,
+        serverReference: CharSequence?,
+        userProperty: List<Pair<CharSequence, CharSequence>>
+    ) = SubscribeRequest(packetIdentifier, subscriptions)
+
+    override fun disconnect(
+        reasonCode: ReasonCode,
+        sessionExpiryIntervalSeconds: Long?,
+        reasonString: CharSequence?,
+        userProperty: List<Pair<CharSequence, CharSequence>>
+    ) = DisconnectNotification
 }
