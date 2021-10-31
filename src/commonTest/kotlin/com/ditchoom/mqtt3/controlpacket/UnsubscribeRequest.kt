@@ -13,11 +13,12 @@ class UnsubscribeRequestTests {
     @Test
     fun basicTest() {
         val buffer = allocateNewBuffer(17u)
-        val unsub = UnsubscribeRequest(packetIdentifier, listOf(MqttUtf8String("yolo"), MqttUtf8String("yolo1")))
+        val unsub = UnsubscribeRequest(packetIdentifier, setOf("yolo", "yolo1"))
         unsub.serialize(buffer)
         buffer.resetForRead()
         val result = ControlPacketV4.from(buffer) as UnsubscribeRequest
-        assertEquals(result.topics.first().getValueOrThrow().toString(), "yolo")
-        assertEquals(result.topics[1].getValueOrThrow().toString(), "yolo1")
+        val topics = result.topics.sortedBy { it.toString() }
+        assertEquals(topics.first(), "yolo")
+        assertEquals(topics[1], "yolo1")
     }
 }
