@@ -1,4 +1,4 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
+@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_OVERRIDE")
 
 package com.ditchoom.mqtt3.controlpacket
 
@@ -27,7 +27,7 @@ data class SubscribeAcknowledgement(override val packetIdentifier: Int, val payl
     }
 
     override fun payload(writeBuffer: WriteBuffer) {
-        payload.forEach { writeBuffer.write(it.byte.toUByte()) }
+        payload.forEach { writeBuffer.write(it.byte) }
     }
 
     companion object {

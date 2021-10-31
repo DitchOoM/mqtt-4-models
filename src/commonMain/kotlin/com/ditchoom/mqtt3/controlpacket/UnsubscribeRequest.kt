@@ -1,4 +1,4 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
+@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_OVERRIDE")
 
 package com.ditchoom.mqtt3.controlpacket
 
@@ -17,8 +17,8 @@ import com.ditchoom.mqtt.controlpacket.utf8Length
  * An UNSUBSCRIBE packet is sent by the Client to the Server, to unsubscribe from topics.
  */
 data class UnsubscribeRequest(
-    val packetIdentifier: Int,
-    val topics: List<MqttUtf8String>
+    override val packetIdentifier: Int,
+    override val topics: Set<CharSequence>
 ) : ControlPacketV4(10, DirectionOfFlow.CLIENT_TO_SERVER, 0b10), IUnsubscribeRequest {
 
     override fun remainingLength() = UShort.SIZE_BYTES.toUInt() + payloadSize()
@@ -31,13 +31,13 @@ data class UnsubscribeRequest(
     private fun payloadSize(): UInt {
         var size = 0u
         topics.forEach {
-            size += UShort.SIZE_BYTES.toUInt() + it.value.utf8Length().toUInt()
+            size += UShort.SIZE_BYTES.toUInt() + it.utf8Length().toUInt()
         }
         return size
     }
 
     override fun payload(writeBuffer: WriteBuffer) {
-        topics.forEach { writeBuffer.writeMqttUtf8String(it.value) }
+        topics.forEach { writeBuffer.writeMqttUtf8String(it) }
     }
 
     init {
@@ -49,12 +49,12 @@ data class UnsubscribeRequest(
     companion object {
         fun from(buffer: ReadBuffer, remainingLength: UInt): UnsubscribeRequest {
             val packetIdentifier = buffer.readUnsignedShort()
-            val topics = mutableListOf<MqttUtf8String>()
+            val topics = mutableSetOf<String>()
             var bytesRead = 0
             while (bytesRead.toUInt() < remainingLength - 2u) {
                 val pair = buffer.readMqttUtf8StringNotValidatedSized()
                 bytesRead += 2 + pair.first.toInt()
-                topics += MqttUtf8String(pair.second)
+                topics += MqttUtf8String(pair.second).value.toString()
             }
             return UnsubscribeRequest(packetIdentifier.toInt(), topics)
         }

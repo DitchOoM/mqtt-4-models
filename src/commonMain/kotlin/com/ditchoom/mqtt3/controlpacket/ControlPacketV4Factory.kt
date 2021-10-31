@@ -64,6 +64,12 @@ object ControlPacketV4Factory : ControlPacketFactory {
         userProperty: List<Pair<CharSequence, CharSequence>>
     ) = SubscribeRequest(packetIdentifier, subscriptions)
 
+    override fun unsubscribe(
+        packetIdentifier: Int,
+        topics: Set<CharSequence>,
+        userProperty: List<Pair<CharSequence, CharSequence>>
+    ) = UnsubscribeRequest(packetIdentifier, topics)
+
     override fun disconnect(
         reasonCode: ReasonCode,
         sessionExpiryIntervalSeconds: Long?,
