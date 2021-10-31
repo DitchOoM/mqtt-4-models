@@ -12,6 +12,7 @@ class PublishReceivedTests {
     @Test
     fun packetIdentifier() {
         val puback = PublishReceived(packetIdentifier)
+        assertEquals(4u, puback.packetSize())
         val buffer = allocateNewBuffer(4u)
         puback.serialize(buffer)
         buffer.resetForRead()
@@ -22,6 +23,7 @@ class PublishReceivedTests {
     @Test
     fun packetIdentifierSendDefaults() {
         val puback = PublishReceived(packetIdentifier)
+        assertEquals(4u, puback.packetSize())
         val buffer = allocateNewBuffer(4u)
         puback.serialize(buffer)
         buffer.resetForRead()

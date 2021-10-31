@@ -8,11 +8,11 @@ import kotlin.test.assertEquals
 
 class PublishAcknowledgementTest {
     private val packetIdentifier = 2
-
     @Test
     fun packetIdentifier() {
         val buffer = allocateNewBuffer(4u)
         val puback = PublishAcknowledgment(packetIdentifier)
+        assertEquals(4u, puback.packetSize())
         puback.serialize(buffer)
         buffer.resetForRead()
         val pubackResult = ControlPacketV4.from(buffer) as PublishAcknowledgment
@@ -23,6 +23,7 @@ class PublishAcknowledgementTest {
     fun packetIdentifierSendDefaults() {
         val buffer = allocateNewBuffer(4u)
         val puback = PublishAcknowledgment(packetIdentifier)
+        assertEquals(4u, puback.packetSize())
         puback.serialize(buffer)
         buffer.resetForRead()
         val pubackResult = ControlPacketV4.from(buffer) as PublishAcknowledgment

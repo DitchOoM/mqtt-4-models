@@ -12,6 +12,7 @@ class PublishCompleteTests {
     @Test
     fun packetIdentifier() {
         val puback = PublishComplete(packetIdentifier)
+        assertEquals(4u, puback.packetSize())
         val buffer = allocateNewBuffer(4u)
         puback.serialize(buffer)
         buffer.resetForRead()

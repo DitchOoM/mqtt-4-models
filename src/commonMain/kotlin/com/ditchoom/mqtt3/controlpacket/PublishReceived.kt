@@ -19,6 +19,8 @@ data class PublishReceived(override val packetIdentifier: Int) : ControlPacketV4
         writeBuffer.write(packetIdentifier.toUShort())
     }
 
+    override fun remainingLength() = 2u
+
     override fun expectedResponse() = PublishRelease(packetIdentifier.toUShort().toInt())
 
     companion object {

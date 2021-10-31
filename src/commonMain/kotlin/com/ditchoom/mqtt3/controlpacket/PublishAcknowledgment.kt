@@ -14,6 +14,9 @@ import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
  */
 data class PublishAcknowledgment(override val packetIdentifier: Int) :
     ControlPacketV4(4, DirectionOfFlow.BIDIRECTIONAL), IPublishAcknowledgment {
+
+    override fun remainingLength() = 2u
+
     override fun variableHeader(writeBuffer: WriteBuffer) {
         writeBuffer.write(packetIdentifier.toUShort())
     }

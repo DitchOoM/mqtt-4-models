@@ -13,6 +13,7 @@ class PublishReleaseTests {
     fun packetIdentifier() {
         val buffer = allocateNewBuffer(4u)
         val puback = PublishRelease(packetIdentifier)
+        assertEquals(4u, puback.packetSize())
         puback.serialize(buffer)
         buffer.resetForRead()
         val pubackResult = ControlPacketV4.from(buffer) as PublishRelease

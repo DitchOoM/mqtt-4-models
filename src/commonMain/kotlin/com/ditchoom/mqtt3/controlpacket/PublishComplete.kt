@@ -18,6 +18,8 @@ data class PublishComplete(override val packetIdentifier: Int) : ControlPacketV4
         writeBuffer.write(packetIdentifier.toUShort())
     }
 
+    override fun remainingLength() = 2u
+
     companion object {
         fun from(buffer: ReadBuffer) = PublishComplete(buffer.readUnsignedShort().toInt())
     }
