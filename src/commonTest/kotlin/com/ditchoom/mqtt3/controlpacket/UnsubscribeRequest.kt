@@ -3,7 +3,6 @@
 package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.allocateNewBuffer
-import com.ditchoom.mqtt.controlpacket.MqttUtf8String
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

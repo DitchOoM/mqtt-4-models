@@ -73,7 +73,7 @@ data class Subscription(
      * Error if the Maximum QoS field has the value 3.
      */
     override val maximumQos: QualityOfService = AT_LEAST_ONCE
-): ISubscription {
+) : ISubscription {
 
     companion object {
         fun fromMany(buffer: ReadBuffer, remaining: UInt): Set<Subscription> {

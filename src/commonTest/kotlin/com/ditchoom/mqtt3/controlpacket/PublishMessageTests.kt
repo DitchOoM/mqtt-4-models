@@ -92,7 +92,8 @@ class PublishMessageTests {
 
     @Test
     fun genericSerializationPublishDupFlag() {
-        val publishMessage = PublishMessage.buildPayload(topicName = "user/log", payload = "yolo".toBuffer(), dup = true)
+        val publishMessage =
+            PublishMessage.buildPayload(topicName = "user/log", payload = "yolo".toBuffer(), dup = true)
         val buffer = allocateNewBuffer(16u)
         publishMessage.serialize(buffer)
         publishMessage.payload?.position(0)
@@ -120,7 +121,10 @@ class PublishMessageTests {
     @Test
     fun genericSerializationPublishQos1() {
         val publishMessage = PublishMessage.buildPayload(
-            topicName = "user/log", payload = "yolo".toBuffer(), qos = QualityOfService.AT_LEAST_ONCE, packetIdentifier = 13
+            topicName = "user/log",
+            payload = "yolo".toBuffer(),
+            qos = QualityOfService.AT_LEAST_ONCE,
+            packetIdentifier = 13
         )
         val buffer = allocateNewBuffer(18u)
         publishMessage.serialize(buffer)
@@ -149,7 +153,10 @@ class PublishMessageTests {
     @Test
     fun genericSerializationPublishQos2() {
         val publishMessage = PublishMessage.buildPayload(
-            topicName = "user/log", payload = "yolo".toBuffer(), qos = QualityOfService.EXACTLY_ONCE, packetIdentifier = 13
+            topicName = "user/log",
+            payload = "yolo".toBuffer(),
+            qos = QualityOfService.EXACTLY_ONCE,
+            packetIdentifier = 13
         )
         val buffer = allocateNewBuffer(18u)
         publishMessage.serialize(buffer)
@@ -177,7 +184,8 @@ class PublishMessageTests {
 
     @Test
     fun genericSerializationPublishRetainFlag() {
-        val publishMessage = PublishMessage.buildPayload(topicName = "user/log", payload = "yolo".toBuffer(), retain = true)
+        val publishMessage =
+            PublishMessage.buildPayload(topicName = "user/log", payload = "yolo".toBuffer(), retain = true)
         val buffer = allocateNewBuffer(16u)
         publishMessage.serialize(buffer)
         publishMessage.payload?.position(0)

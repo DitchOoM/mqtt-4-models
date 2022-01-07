@@ -7,7 +7,8 @@ import com.ditchoom.mqtt.MqttWarning
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.readVariableByteInteger
 import com.ditchoom.mqtt.controlpacket.MqttUtf8String
 import com.ditchoom.mqtt.controlpacket.QualityOfService
-import com.ditchoom.mqtt.controlpacket.QualityOfService.*
+import com.ditchoom.mqtt.controlpacket.QualityOfService.AT_MOST_ONCE
+import com.ditchoom.mqtt.controlpacket.QualityOfService.EXACTLY_ONCE
 import com.ditchoom.mqtt3.controlpacket.ConnectionRequest.VariableHeader
 import kotlin.test.*
 

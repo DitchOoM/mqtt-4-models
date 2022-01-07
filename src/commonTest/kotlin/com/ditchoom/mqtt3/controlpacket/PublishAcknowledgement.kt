@@ -8,6 +8,7 @@ import kotlin.test.assertEquals
 
 class PublishAcknowledgementTest {
     private val packetIdentifier = 2
+
     @Test
     fun packetIdentifier() {
         val buffer = allocateNewBuffer(4u)

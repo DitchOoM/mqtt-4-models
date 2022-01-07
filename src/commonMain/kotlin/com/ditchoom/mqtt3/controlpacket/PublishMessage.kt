@@ -213,7 +213,8 @@ data class PublishMessage(
             fun from(buffer: ReadBuffer, isQos0: Boolean): VariableHeader {
                 // Intention NullPointerException. This should fail the validation and immediately bail out
                 val topicNameValidated =
-                    Name(buffer.readMqttUtf8StringNotValidatedSized().second).validateTopic()!!.getAllBottomLevelChildren().first()
+                    Name(buffer.readMqttUtf8StringNotValidatedSized().second).validateTopic()!!
+                        .getAllBottomLevelChildren().first()
                 val packetIdentifier = if (isQos0) null else buffer.readUnsignedShort()
                 return VariableHeader(topicNameValidated.getCurrentPath(), packetIdentifier?.toInt())
             }
@@ -237,7 +238,7 @@ data class PublishMessage(
                 variableSize += 2u
             }
             val size = remainingLength - variableSize
-            val payloadBuffer =  if (size > 0u) {
+            val payloadBuffer = if (size > 0u) {
                 val array = buffer.readByteArray(size)
                 val payloadBuffer = allocateNewBuffer(size)
                 payloadBuffer.write(array)
