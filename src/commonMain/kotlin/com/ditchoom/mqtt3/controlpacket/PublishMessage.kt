@@ -34,6 +34,8 @@ data class PublishMessage(
         }
     }
 
+    override val packetIdentifier = variable.packetIdentifier
+
     override val qualityOfService: QualityOfService = fixed.qos
 
     override fun variableHeader(writeBuffer: WriteBuffer) = variable.serialize(writeBuffer)
