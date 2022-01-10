@@ -5,6 +5,7 @@ package com.ditchoom.mqtt3.controlpacket
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
 import com.ditchoom.mqtt.ProtocolError
+import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.readMqttUtf8StringNotValidatedSized
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.writeMqttUtf8String
 import com.ditchoom.mqtt.controlpacket.IUnsubscribeRequest
@@ -16,6 +17,7 @@ import com.ditchoom.mqtt.controlpacket.utf8Length
  * 3.10 UNSUBSCRIBE – Unsubscribe request
  * An UNSUBSCRIBE packet is sent by the Client to the Server, to unsubscribe from topics.
  */
+@Parcelize
 data class UnsubscribeRequest(
     override val packetIdentifier: Int,
     override val topics: Set<CharSequence>

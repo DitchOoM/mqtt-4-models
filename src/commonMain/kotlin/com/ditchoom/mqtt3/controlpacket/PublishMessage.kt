@@ -2,11 +2,9 @@
 
 package com.ditchoom.mqtt3.controlpacket
 
-import com.ditchoom.buffer.PlatformBuffer
-import com.ditchoom.buffer.ReadBuffer
-import com.ditchoom.buffer.WriteBuffer
-import com.ditchoom.buffer.allocateNewBuffer
+import com.ditchoom.buffer.*
 import com.ditchoom.mqtt.MalformedPacketException
+import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.readMqttUtf8StringNotValidatedSized
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.writeMqttUtf8String
 import com.ditchoom.mqtt.controlpacket.IPublishMessage
@@ -20,10 +18,11 @@ import com.ditchoom.mqtt.topic.Name
  * A PUBLISH Control Packet is sent from a Client to a Server or from Server to a Client to transport an
  * Application Message.
  */
+@Parcelize
 data class PublishMessage(
     val fixed: FixedHeader = FixedHeader(),
     val variable: VariableHeader,
-    val payload: PlatformBuffer? = null
+    val payload: ParcelablePlatformBuffer? = null
 ) : ControlPacketV4(3, DirectionOfFlow.BIDIRECTIONAL, fixed.flags), IPublishMessage {
 
     init {
@@ -59,6 +58,7 @@ data class PublishMessage(
 
     override val topic: CharSequence = variable.topicName
 
+    @Parcelize
     data class FixedHeader(
         /**
          * 3.3.1.1 DUP
@@ -138,7 +138,7 @@ data class PublishMessage(
          * subscriber will receive the most recent state.
          */
         val retain: Boolean = false
-    ) {
+    ) : Parcelable {
         val flags by lazy {
             val dupInt = if (dup) 0b1000 else 0b0
             val qosInt = qos.integerValue.toInt().shl(1)
@@ -172,6 +172,7 @@ data class PublishMessage(
      *
      * The variable header contains the following fields in the order: Topic Name, Packet Identifier.
      */
+    @Parcelize
     data class VariableHeader(
         /**
          * The Topic Name identifies the information channel to which payload data is published.
@@ -192,7 +193,7 @@ data class PublishMessage(
          * 2.3.1 provides more information about Packet Identifiers.
          */
         val packetIdentifier: Int? = null
-    ) {
+    ) : Parcelable {
 
         fun serialize(writeBuffer: WriteBuffer) {
             writeBuffer.writeMqttUtf8String(topicName)
@@ -265,7 +266,7 @@ data class PublishMessage(
             retain: Boolean = false,
             topicName: CharSequence = "",
             packetIdentifier: Int? = null,
-            payload: PlatformBuffer? = null
+            payload: ParcelablePlatformBuffer? = null
         ): PublishMessage {
             val fixed = FixedHeader(dup, qos, retain)
             val variable = VariableHeader(topicName, packetIdentifier)

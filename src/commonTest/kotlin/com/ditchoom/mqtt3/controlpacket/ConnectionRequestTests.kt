@@ -5,7 +5,6 @@ package com.ditchoom.mqtt3.controlpacket
 import com.ditchoom.buffer.allocateNewBuffer
 import com.ditchoom.mqtt.MqttWarning
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.readVariableByteInteger
-import com.ditchoom.mqtt.controlpacket.MqttUtf8String
 import com.ditchoom.mqtt.controlpacket.QualityOfService
 import com.ditchoom.mqtt.controlpacket.QualityOfService.AT_MOST_ONCE
 import com.ditchoom.mqtt.controlpacket.QualityOfService.EXACTLY_ONCE
@@ -186,7 +185,7 @@ class ConnectionRequestTests {
     fun variableHeaderConnectFlagsByte8HasUsername() {
         val connectionRequest = ConnectionRequest(
             VariableHeader(willQos = AT_MOST_ONCE, hasUserName = true),
-            ConnectionRequest.Payload(userName = MqttUtf8String("yolo"))
+            ConnectionRequest.Payload(userName = "yolo")
         )
         val buffer = allocateNewBuffer(20u)
         connectionRequest.serialize(buffer)
@@ -226,7 +225,7 @@ class ConnectionRequestTests {
     fun variableHeaderConnectFlagsByte8HasPassword() {
         val connectionRequest = ConnectionRequest(
             VariableHeader(willQos = AT_MOST_ONCE, hasPassword = true),
-            ConnectionRequest.Payload(password = MqttUtf8String("yolo"))
+            ConnectionRequest.Payload(password = "yolo")
         )
         val buffer = allocateNewBuffer(20u)
         connectionRequest.serialize(buffer)
@@ -559,7 +558,7 @@ class ConnectionRequestTests {
     fun usernameFlagMatchesPayloadFailureCaseNoFlagWithUsername() {
         try {
             val connectionRequest = ConnectionRequest(
-                payload = ConnectionRequest.Payload(userName = MqttUtf8String("yolo"))
+                payload = ConnectionRequest.Payload(userName = "yolo")
             )
             val warning = connectionRequest.validateOrGetWarning()
             if (warning != null) throw warning
@@ -583,7 +582,7 @@ class ConnectionRequestTests {
     fun passwordFlagMatchesPayloadFailureCaseNoFlagWithUsername() {
         try {
             val connectionRequest = ConnectionRequest(
-                payload = ConnectionRequest.Payload(password = MqttUtf8String("yolo"))
+                payload = ConnectionRequest.Payload(password = "yolo")
             )
             val warning = connectionRequest.validateOrGetWarning()
             if (warning != null) throw warning

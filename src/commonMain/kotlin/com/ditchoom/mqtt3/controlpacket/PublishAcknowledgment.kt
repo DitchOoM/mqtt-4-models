@@ -4,6 +4,7 @@ package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
+import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IPublishAcknowledgment
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 
@@ -12,6 +13,7 @@ import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
  *
  * A PUBACK packet is the response to a PUBLISH packet with QoS 1.
  */
+@Parcelize
 data class PublishAcknowledgment(override val packetIdentifier: Int) :
     ControlPacketV4(4, DirectionOfFlow.BIDIRECTIONAL), IPublishAcknowledgment {
 

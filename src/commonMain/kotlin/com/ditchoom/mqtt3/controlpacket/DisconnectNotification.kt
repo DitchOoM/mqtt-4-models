@@ -2,6 +2,7 @@
 
 package com.ditchoom.mqtt3.controlpacket
 
+import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IDisconnectNotification
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 
@@ -24,4 +25,5 @@ import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
  *
  * SHOULD close the Network Connection if the Client has not already done so.
  */
+@Parcelize
 object DisconnectNotification : ControlPacketV4(14, DirectionOfFlow.BIDIRECTIONAL), IDisconnectNotification

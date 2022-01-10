@@ -5,8 +5,11 @@ package com.ditchoom.mqtt3.controlpacket
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
 import com.ditchoom.mqtt.MalformedPacketException
+import com.ditchoom.mqtt.base.Parcelable
+import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IConnectionAcknowledgment
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
+import com.ditchoom.mqtt3.controlpacket.ConnectionAcknowledgment.VariableHeader.ReturnCode
 import com.ditchoom.mqtt3.controlpacket.ConnectionAcknowledgment.VariableHeader.ReturnCode.*
 
 typealias CONNACK = ConnectionAcknowledgment
@@ -20,8 +23,16 @@ typealias CONNACK = ConnectionAcknowledgment
  * SHOULD close the Network Connection. A "reasonable" amount of time depends on the type of application and the
  * communications infrastructure.
  */
+@Parcelize
 data class ConnectionAcknowledgment(val header: VariableHeader = VariableHeader()) :
     ControlPacketV4(2, DirectionOfFlow.SERVER_TO_CLIENT), IConnectionAcknowledgment {
+    constructor(sessionPresent: Boolean, connectReason: ReturnCode) : this(
+        VariableHeader(
+            sessionPresent,
+            connectReason
+        )
+    )
+
     override val sessionPresent: Boolean = header.sessionPresent
     override val isSuccessful: Boolean = header.connectReason == CONNECTION_ACCEPTED
     override val connectionReason: String = header.connectReason.name
@@ -36,6 +47,7 @@ data class ConnectionAcknowledgment(val header: VariableHeader = VariableHeader(
      * @see <a href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/cos02/mqtt-v5.0-cos02.html#_Properties">
      *     Section 2.2.2</a>
      */
+    @Parcelize
     data class VariableHeader(
         /**
          * 3.2.2.2 Session Present
@@ -85,7 +97,7 @@ data class ConnectionAcknowledgment(val header: VariableHeader = VariableHeader(
          * the connection has not been authorized it might be unwise to indicate that this is an MQTT Server.
          */
         val connectReason: ReturnCode = CONNECTION_ACCEPTED
-    ) {
+    ) : Parcelable {
 
         enum class ReturnCode(val value: UByte) {
             CONNECTION_ACCEPTED(0.toUByte()),

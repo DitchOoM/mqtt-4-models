@@ -4,6 +4,7 @@ package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
+import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.readMqttUtf8StringNotValidatedSized
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.writeMqttUtf8String
 import com.ditchoom.mqtt.controlpacket.ISubscribeRequest
@@ -26,6 +27,7 @@ import com.ditchoom.mqtt.topic.Filter
  * Bits 3,2,1 and 0 of the Fixed Header of the SUBSCRIBE packet are reserved and MUST be set to 0,0,1 and 0
  * respectively. The Server MUST treat any other value as malformed and close the Network Connection [MQTT-3.8.1-1].
  */
+@Parcelize
 data class SubscribeRequest(override val packetIdentifier: Int, override val subscriptions: Set<ISubscription>) :
     ControlPacketV4(ISubscribeRequest.controlPacketValue, DirectionOfFlow.CLIENT_TO_SERVER, 0b10), ISubscribeRequest {
 
@@ -65,6 +67,7 @@ data class SubscribeRequest(override val packetIdentifier: Int, override val sub
     }
 }
 
+@Parcelize
 data class Subscription(
     override val topicFilter: Filter,
     /**

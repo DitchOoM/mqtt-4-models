@@ -4,9 +4,11 @@ package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
+import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IUnsubscribeAcknowledgment
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 
+@Parcelize
 data class UnsubscribeAcknowledgment(override val packetIdentifier: Int) :
     ControlPacketV4(11, DirectionOfFlow.SERVER_TO_CLIENT), IUnsubscribeAcknowledgment {
     override fun variableHeader(writeBuffer: WriteBuffer) {

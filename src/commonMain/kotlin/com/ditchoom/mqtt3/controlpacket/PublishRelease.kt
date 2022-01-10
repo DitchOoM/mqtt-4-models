@@ -4,6 +4,7 @@ package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
+import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IPublishRelease
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 
@@ -12,6 +13,7 @@ import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
  *
  * A PUBREL packet is the response to a PUBREC packet. It is the third packet of the QoS 2 protocol exchange.
  */
+@Parcelize
 data class PublishRelease(override val packetIdentifier: Int) : ControlPacketV4(6, DirectionOfFlow.BIDIRECTIONAL, 0b10),
     IPublishRelease {
     override fun variableHeader(writeBuffer: WriteBuffer) {

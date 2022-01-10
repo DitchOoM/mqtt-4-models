@@ -2,12 +2,14 @@
 
 package com.ditchoom.mqtt3.controlpacket
 
-import com.ditchoom.buffer.PlatformBuffer
+import com.ditchoom.buffer.ParcelablePlatformBuffer
 import com.ditchoom.buffer.ReadBuffer
+import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.*
 import com.ditchoom.mqtt.controlpacket.format.ReasonCode
 import com.ditchoom.mqtt.topic.Filter
 
+@Parcelize
 object ControlPacketV4Factory : ControlPacketFactory {
 
     override fun from(buffer: ReadBuffer, byte1: UByte, remainingLength: UInt) =
@@ -22,13 +24,13 @@ object ControlPacketV4Factory : ControlPacketFactory {
         packetIdentifier: Int?,
         retain: Boolean,
         topicName: CharSequence,
-        payload: PlatformBuffer?,
+        payload: ParcelablePlatformBuffer?,
         // MQTT 5 Properties, Should be ignored in this version
         payloadFormatIndicator: Boolean,
         messageExpiryInterval: Long?,
         topicAlias: Int?,
         responseTopic: CharSequence?,
-        correlationData: PlatformBuffer?,
+        correlationData: ParcelablePlatformBuffer?,
         userProperty: List<Pair<CharSequence, CharSequence>>,
         subscriptionIdentifier: Set<Long>,
         contentType: CharSequence?

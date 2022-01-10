@@ -4,6 +4,7 @@ package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
+import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IPublishComplete
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 
@@ -12,6 +13,7 @@ import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
  *
  * The PUBCOMP packet is the response to a PUBREL packet. It is the fourth and final packet of the QoS 2 protocol exchange.
  */
+@Parcelize
 data class PublishComplete(override val packetIdentifier: Int) : ControlPacketV4(7, DirectionOfFlow.BIDIRECTIONAL),
     IPublishComplete {
     override fun variableHeader(writeBuffer: WriteBuffer) {
