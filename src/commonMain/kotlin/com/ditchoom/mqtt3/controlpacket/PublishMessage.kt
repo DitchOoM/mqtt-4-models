@@ -57,11 +57,12 @@ data class PublishMessage(
     }
 
     override fun setDupFlagNewPubMessage(): IPublishMessage {
-        return if (fixed.dup) {
+        return if (fixed.qos == AT_MOST_ONCE && fixed.dup) {
+            copy(fixed = fixed.copy(dup = false), variable = variable, payload = payload)
+        } else if (fixed.dup) {
             this
         } else {
-            val fixedHeaderWithDup = fixed.copy(dup = true)
-            copy(fixed = fixedHeaderWithDup, variable = variable, payload = payload)
+            copy(fixed = fixed.copy(dup = true), variable = variable, payload = payload)
         }
     }
 
