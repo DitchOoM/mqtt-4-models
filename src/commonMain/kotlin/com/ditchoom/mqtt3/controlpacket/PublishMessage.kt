@@ -56,6 +56,15 @@ data class PublishMessage(
         else -> null
     }
 
+    override fun setDupFlagNewPubMessage(): IPublishMessage {
+        return if (fixed.dup) {
+            this
+        } else {
+            val fixedHeaderWithDup = fixed.copy(dup = true)
+            copy(fixed = fixedHeaderWithDup, variable = variable, payload = payload)
+        }
+    }
+
     override val topic: CharSequence = variable.topicName
 
     @Parcelize
