@@ -38,6 +38,7 @@ data class ConnectionAcknowledgment(val header: VariableHeader = VariableHeader(
     override val connectionReason: String = header.connectReason.name
 
     override fun variableHeader(writeBuffer: WriteBuffer) = header.serialize(writeBuffer)
+    override fun remainingLength() = 2u
 
     /**
      * The Variable Header of the CONNACK Packet contains the following fields in the order: Connect Acknowledge Flags,
