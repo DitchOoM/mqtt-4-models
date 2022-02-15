@@ -11,6 +11,8 @@ import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 @Parcelize
 data class UnsubscribeAcknowledgment(override val packetIdentifier: Int) :
     ControlPacketV4(11, DirectionOfFlow.SERVER_TO_CLIENT), IUnsubscribeAcknowledgment {
+    override fun remainingLength() = 2u
+
     override fun variableHeader(writeBuffer: WriteBuffer) {
         writeBuffer.write(packetIdentifier.toUShort())
     }
