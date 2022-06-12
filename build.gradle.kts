@@ -12,7 +12,6 @@ group = "com.ditchoom"
 version = "$libraryVersionPrefix.0-SNAPSHOT"
 
 repositories {
-    mavenLocal()
     google()
     mavenCentral()
 }
