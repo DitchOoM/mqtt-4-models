@@ -1,8 +1,7 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
-
 package com.ditchoom.mqtt3.controlpacket
 
-import com.ditchoom.buffer.allocateNewBuffer
+import com.ditchoom.buffer.PlatformBuffer
+import com.ditchoom.buffer.allocate
 import com.ditchoom.buffer.toBuffer
 import com.ditchoom.mqtt.MalformedPacketException
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.readVariableByteInteger
@@ -18,7 +17,7 @@ class PublishMessageTests {
     fun qosBothBitsSetTo1ThrowsMalformedPacketException() {
         val byte1 = 0b00111110.toByte()
         val remainingLength = 1.toByte()
-        val buffer = allocateNewBuffer(2u)
+        val buffer = PlatformBuffer.allocate(2)
         buffer.write(byte1)
         buffer.write(remainingLength)
         buffer.resetForRead()
@@ -65,7 +64,7 @@ class PublishMessageTests {
     @Test
     fun genericSerialization() {
         val publishMessage = PublishMessage.buildPayload(topicName = "user/log", payload = "yolo".toBuffer())
-        val buffer = allocateNewBuffer(16u)
+        val buffer = PlatformBuffer.allocate(16)
         publishMessage.serialize(buffer)
         val publishPayload = publishMessage.payload
         publishPayload?.position(0)
@@ -76,7 +75,7 @@ class PublishMessageTests {
         assertFalse(firstByte.get(2), "fixed header qos bit 2")
         assertFalse(firstByte.get(1), "fixed header qos bit 1")
         assertFalse(firstByte.get(0), "fixed header retain flag")
-        assertEquals(buffer.readVariableByteInteger(), 14u, "fixed header remaining length")
+        assertEquals(buffer.readVariableByteInteger(), 14, "fixed header remaining length")
         assertEquals(8u, buffer.readUnsignedShort(), "variable header topic name length")
         assertEquals("user/log", buffer.readUtf8(8u).toString(), "variable header topic name value")
         if (publishMessage.variable.packetIdentifier != null) {
@@ -94,7 +93,7 @@ class PublishMessageTests {
     fun genericSerializationPublishDupFlag() {
         val publishMessage =
             PublishMessage.buildPayload(topicName = "user/log", payload = "yolo".toBuffer(), dup = true)
-        val buffer = allocateNewBuffer(16u)
+        val buffer = PlatformBuffer.allocate(16)
         publishMessage.serialize(buffer)
         publishMessage.payload?.position(0)
         buffer.resetForRead()
@@ -104,7 +103,7 @@ class PublishMessageTests {
         assertFalse(firstByte.get(2), "fixed header qos bit 2")
         assertFalse(firstByte.get(1), "fixed header qos bit 1")
         assertFalse(firstByte.get(0), "fixed header retain flag")
-        assertEquals(buffer.readVariableByteInteger(), 14u, "fixed header remaining length")
+        assertEquals(buffer.readVariableByteInteger(), 14, "fixed header remaining length")
         assertEquals(8u, buffer.readUnsignedShort(), "variable header topic name length")
         assertEquals("user/log", buffer.readUtf8(8u).toString(), "variable header topic name value")
         if (publishMessage.variable.packetIdentifier != null) {
@@ -126,7 +125,7 @@ class PublishMessageTests {
             qos = QualityOfService.AT_LEAST_ONCE,
             packetIdentifier = 13
         )
-        val buffer = allocateNewBuffer(18u)
+        val buffer = PlatformBuffer.allocate(18)
         publishMessage.serialize(buffer)
         publishMessage.payload?.position(0)
         buffer.resetForRead()
@@ -136,7 +135,7 @@ class PublishMessageTests {
         assertFalse(firstByte.get(2), "fixed header qos bit 2")
         assertTrue(firstByte.get(1), "fixed header qos bit 1")
         assertFalse(firstByte.get(0), "fixed header retain flag")
-        assertEquals(buffer.readVariableByteInteger(), 16u, "fixed header remaining length")
+        assertEquals(buffer.readVariableByteInteger(), 16, "fixed header remaining length")
         assertEquals(8u, buffer.readUnsignedShort(), "variable header topic name length")
         assertEquals("user/log", buffer.readUtf8(8u).toString(), "variable header topic name value")
         if (publishMessage.variable.packetIdentifier != null) {
@@ -158,7 +157,7 @@ class PublishMessageTests {
             qos = QualityOfService.EXACTLY_ONCE,
             packetIdentifier = 13
         )
-        val buffer = allocateNewBuffer(18u)
+        val buffer = PlatformBuffer.allocate(18)
         publishMessage.serialize(buffer)
         publishMessage.payload?.position(0)
         buffer.resetForRead()
@@ -168,7 +167,7 @@ class PublishMessageTests {
         assertTrue(firstByte.get(2), "fixed header qos bit 2")
         assertFalse(firstByte.get(1), "fixed header qos bit 1")
         assertFalse(firstByte.get(0), "fixed header retain flag")
-        assertEquals(buffer.readVariableByteInteger(), 16u, "fixed header remaining length")
+        assertEquals(buffer.readVariableByteInteger(), 16, "fixed header remaining length")
         assertEquals(8u, buffer.readUnsignedShort(), "variable header topic name length")
         assertEquals("user/log", buffer.readUtf8(8u).toString(), "variable header topic name value")
         if (publishMessage.variable.packetIdentifier != null) {
@@ -186,7 +185,7 @@ class PublishMessageTests {
     fun genericSerializationPublishRetainFlag() {
         val publishMessage =
             PublishMessage.buildPayload(topicName = "user/log", payload = "yolo".toBuffer(), retain = true)
-        val buffer = allocateNewBuffer(16u)
+        val buffer = PlatformBuffer.allocate(16)
         publishMessage.serialize(buffer)
         publishMessage.payload?.position(0)
         buffer.resetForRead()
@@ -196,7 +195,7 @@ class PublishMessageTests {
         assertFalse(firstByte.get(2), "fixed header qos bit 2")
         assertFalse(firstByte.get(1), "fixed header qos bit 1")
         assertTrue(firstByte.get(0), "fixed header retain flag")
-        assertEquals(buffer.readVariableByteInteger(), 14u, "fixed header remaining length")
+        assertEquals(buffer.readVariableByteInteger(), 14, "fixed header remaining length")
         assertEquals(8u, buffer.readUnsignedShort(), "variable header topic name length")
         assertEquals("user/log", buffer.readUtf8(8u).toString(), "variable header topic name value")
         if (publishMessage.variable.packetIdentifier != null) {
@@ -213,7 +212,7 @@ class PublishMessageTests {
     @Test
     fun nullGenericSerialization() {
         val publishMessage = PublishMessage.build(topicName = "user/log")
-        val buffer = allocateNewBuffer(12u)
+        val buffer = PlatformBuffer.allocate(12)
         publishMessage.serialize(buffer)
         buffer.resetForRead()
         val firstByte = buffer.readUnsignedByte()
@@ -222,7 +221,7 @@ class PublishMessageTests {
         assertFalse(firstByte.get(2), "fixed header qos bit 2")
         assertFalse(firstByte.get(1), "fixed header qos bit 1")
         assertFalse(firstByte.get(0), "fixed header retain flag")
-        assertEquals(buffer.readVariableByteInteger(), 10u, "fixed header remaining length")
+        assertEquals(buffer.readVariableByteInteger(), 10, "fixed header remaining length")
         assertEquals(8u, buffer.readUnsignedShort(), "variable header topic name length")
         assertEquals("user/log", buffer.readUtf8(8u).toString(), "variable header topic name value")
         if (publishMessage.variable.packetIdentifier != null) {

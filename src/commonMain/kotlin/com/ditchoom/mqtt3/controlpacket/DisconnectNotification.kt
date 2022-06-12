@@ -1,8 +1,5 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package com.ditchoom.mqtt3.controlpacket
 
-import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IDisconnectNotification
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 

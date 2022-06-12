@@ -1,10 +1,7 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
-import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IPublishAcknowledgment
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 
@@ -17,7 +14,7 @@ import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 data class PublishAcknowledgment(override val packetIdentifier: Int) :
     ControlPacketV4(4, DirectionOfFlow.BIDIRECTIONAL), IPublishAcknowledgment {
 
-    override fun remainingLength() = 2u
+    override fun remainingLength() = 2
 
     override fun variableHeader(writeBuffer: WriteBuffer) {
         writeBuffer.write(packetIdentifier.toUShort())

@@ -1,11 +1,8 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_OVERRIDE")
-
 package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
 import com.ditchoom.mqtt.ProtocolError
-import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.readMqttUtf8StringNotValidatedSized
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.writeMqttUtf8String
 import com.ditchoom.mqtt.controlpacket.IUnsubscribeRequest
@@ -23,17 +20,17 @@ data class UnsubscribeRequest(
     override val topics: Set<CharSequence>
 ) : ControlPacketV4(10, DirectionOfFlow.CLIENT_TO_SERVER, 0b10), IUnsubscribeRequest {
 
-    override fun remainingLength() = UShort.SIZE_BYTES.toUInt() + payloadSize()
+    override fun remainingLength() = UShort.SIZE_BYTES + payloadSize()
 
 
     override fun variableHeader(writeBuffer: WriteBuffer) {
         writeBuffer.write(packetIdentifier.toUShort())
     }
 
-    private fun payloadSize(): UInt {
-        var size = 0u
+    private fun payloadSize(): Int {
+        var size = 0
         topics.forEach {
-            size += UShort.SIZE_BYTES.toUInt() + it.utf8Length().toUInt()
+            size += UShort.SIZE_BYTES + it.utf8Length()
         }
         return size
     }
@@ -49,13 +46,13 @@ data class UnsubscribeRequest(
     }
 
     companion object {
-        fun from(buffer: ReadBuffer, remainingLength: UInt): UnsubscribeRequest {
+        fun from(buffer: ReadBuffer, remainingLength: Int): UnsubscribeRequest {
             val packetIdentifier = buffer.readUnsignedShort()
             val topics = mutableSetOf<String>()
             var bytesRead = 0
-            while (bytesRead.toUInt() < remainingLength - 2u) {
+            while (bytesRead < remainingLength - 2) {
                 val pair = buffer.readMqttUtf8StringNotValidatedSized()
-                bytesRead += 2 + pair.first.toInt()
+                bytesRead += 2 + pair.first
                 topics += MqttUtf8String(pair.second).value.toString()
             }
             return UnsubscribeRequest(packetIdentifier.toInt(), topics)

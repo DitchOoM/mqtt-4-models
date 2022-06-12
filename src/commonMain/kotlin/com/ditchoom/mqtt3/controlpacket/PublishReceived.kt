@@ -1,10 +1,7 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
-import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IPublishReceived
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 
@@ -21,7 +18,7 @@ data class PublishReceived(override val packetIdentifier: Int) : ControlPacketV4
         writeBuffer.write(packetIdentifier.toUShort())
     }
 
-    override fun remainingLength() = 2u
+    override fun remainingLength() = 2
 
     override fun expectedResponse() = PublishRelease(packetIdentifier.toUShort().toInt())
 

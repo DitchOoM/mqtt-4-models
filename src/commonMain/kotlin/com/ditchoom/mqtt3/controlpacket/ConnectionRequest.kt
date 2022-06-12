@@ -1,11 +1,8 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_OVERRIDE")
-
 package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.*
 import com.ditchoom.mqtt.MalformedPacketException
 import com.ditchoom.mqtt.MqttWarning
-import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.readMqttUtf8StringNotValidatedSized
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.writeMqttUtf8String
 import com.ditchoom.mqtt.controlpacket.IConnectionRequest
@@ -43,7 +40,7 @@ data class ConnectionRequest(
         userName: String? = null,
         password: String? = null,
         willTopic: String? = null,
-        willPayload: ParcelablePlatformBuffer? = null,
+        willPayload: PlatformBuffer? = null,
         willRetain: Boolean = false,
         willQos: QualityOfService = QualityOfService.AT_LEAST_ONCE
     ) : this(
@@ -361,7 +358,7 @@ data class ConnectionRequest(
             writeBuffer.write(keepAliveSeconds.toUShort())
         }
 
-        fun size() = protocolName.utf8Length().toUInt() + 6u
+        fun size() = protocolName.utf8Length() + 6
 
         companion object {
 
@@ -465,7 +462,7 @@ data class ConnectionRequest(
          * When the Will Message is published to the Will Topic its payload consists only of the data portion of
          * this field, not the first two length bytes.
          */
-        val willPayload: ParcelablePlatformBuffer? = null,
+        val willPayload: PlatformBuffer? = null,
         /**
          * 3.1.3.4 User Name
          *
@@ -484,19 +481,19 @@ data class ConnectionRequest(
         val password: String? = null
     ) : Parcelable {
 
-        fun size(): UInt {
-            var size = 2u + clientId.utf8Length().toUInt()
+        fun size(): Int {
+            var size = 2 + clientId.utf8Length()
             if (willTopic != null) {
-                size += 2u + willTopic.utf8Length().toUInt()
+                size += 2 + willTopic.utf8Length()
             }
             if (willPayload != null) {
                 size += willPayload.remaining()
             }
             if (userName != null) {
-                size += 2u + userName.utf8Length().toUInt()
+                size += 2 + userName.utf8Length()
             }
             if (password != null) {
-                size += 2u + password.utf8Length().toUInt()
+                size += 2 + password.utf8Length()
             }
             return size
         }
@@ -541,9 +538,9 @@ data class ConnectionRequest(
                     )
                     headers.add("${variableHeader.protocolName} Will QoS", variableHeader.willQos.toString())
                     headers.add("${variableHeader.protocolName} Will Topic", willTopic!!)
-                    val willPayloadSize = buffer.readUnsignedShort()
-                    val willPayloadArray = buffer.readByteArray(willPayloadSize.toUInt())
-                    val willPayloadBuffer = allocateNewBuffer(willPayloadSize.toUInt())
+                    val willPayloadSize = buffer.readUnsignedShort().toInt()
+                    val willPayloadArray = buffer.readByteArray(willPayloadSize)
+                    val willPayloadBuffer = PlatformBuffer.allocate(willPayloadSize, zone = AllocationZone.Direct)
                     willPayloadBuffer.write(willPayloadArray)
                     willPayloadBuffer.resetForRead()
                     willPayloadBuffer

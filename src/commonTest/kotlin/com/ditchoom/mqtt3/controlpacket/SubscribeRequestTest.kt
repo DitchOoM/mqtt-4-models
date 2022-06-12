@@ -1,8 +1,7 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
-
 package com.ditchoom.mqtt3.controlpacket
 
-import com.ditchoom.buffer.allocateNewBuffer
+import com.ditchoom.buffer.PlatformBuffer
+import com.ditchoom.buffer.allocate
 import com.ditchoom.mqtt.controlpacket.QualityOfService.*
 import com.ditchoom.mqtt.topic.Filter
 import kotlin.test.Test
@@ -12,7 +11,7 @@ class SubscribeRequestTest {
 
     @Test
     fun serializeTestByteArray() {
-        val readBuffer = allocateNewBuffer(12u)
+        val readBuffer = PlatformBuffer.allocate(12)
         val subscription = Subscription.from(listOf(Filter("a/b"), Filter("c/d")), listOf(AT_LEAST_ONCE, EXACTLY_ONCE))
         Subscription.writeMany(subscription, readBuffer)
         readBuffer.resetForRead()
@@ -50,7 +49,7 @@ class SubscribeRequestTest {
 
     @Test
     fun subscriptionPayload() {
-        val readBuffer = allocateNewBuffer(12u)
+        val readBuffer = PlatformBuffer.allocate(12)
         val subscription = Subscription.from(listOf(Filter("a/b"), Filter("c/d")), listOf(AT_LEAST_ONCE, EXACTLY_ONCE))
         Subscription.writeMany(subscription, readBuffer)
         readBuffer.resetForRead()
@@ -88,21 +87,21 @@ class SubscribeRequestTest {
 
     @Test
     fun packetIdentifierIsCorrect() {
-        val buffer = allocateNewBuffer(10u)
+        val buffer = PlatformBuffer.allocate(100)
         val subscription = SubscribeRequest(10.toUShort(), Filter("a/b"), AT_MOST_ONCE)
         assertEquals(10, subscription.packetIdentifier)
         subscription.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte()
         buffer.readByte()
-        val packetIdentifer = buffer.readUnsignedShort()
-        assertEquals(10.toUShort(), packetIdentifer)
+        val packetIdentifier = buffer.readUnsignedShort().toInt()
+        assertEquals(10, packetIdentifier)
     }
 
     @Test
     fun serialized() {
         val subscriptions = Subscription.from(listOf(Filter("a/b"), Filter("c/d")), listOf(AT_LEAST_ONCE, EXACTLY_ONCE))
-        val buffer = allocateNewBuffer(19u)
+        val buffer = PlatformBuffer.allocate(19)
         val request = SubscribeRequest(10, subscriptions)
         request.serialize(buffer)
         buffer.resetForRead()
@@ -155,21 +154,21 @@ class SubscribeRequestTest {
 
     @Test
     fun serializeDeserialize() {
-        val subscribeRequest = SubscribeRequest(2, setOf(Subscription(Filter("test"))))
+        val subscribeRequest = SubscribeRequest(2, setOf(Subscription("test")))
         assertEquals(subscribeRequest.packetIdentifier, 2)
         val subs = subscribeRequest.subscriptions
         val firstSub = subs.first()
         val filter = firstSub.topicFilter
-        val validated = filter.validate()!!
+        val validated = Filter(filter).validate()!!
         assertEquals(validated.level.value, "test")
-        val buffer = allocateNewBuffer(11u)
+        val buffer = PlatformBuffer.allocate(11)
         subscribeRequest.serialize(buffer)
         buffer.resetForRead()
         val requestRead = ControlPacketV4.from(buffer) as SubscribeRequest
         val subs1 = requestRead.subscriptions
         val firstSub1 = subs1.first()
         val filter1 = firstSub1.topicFilter
-        val validated1 = filter1.validate()!!
+        val validated1 = Filter(filter1).validate()!!
         assertEquals(validated1.level.value, "test")
     }
 }

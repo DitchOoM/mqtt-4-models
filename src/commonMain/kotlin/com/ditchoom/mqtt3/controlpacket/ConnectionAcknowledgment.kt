@@ -1,12 +1,9 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_OVERRIDE")
-
 package com.ditchoom.mqtt3.controlpacket
 
+import com.ditchoom.buffer.Parcelable
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
 import com.ditchoom.mqtt.MalformedPacketException
-import com.ditchoom.mqtt.base.Parcelable
-import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IConnectionAcknowledgment
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 import com.ditchoom.mqtt3.controlpacket.ConnectionAcknowledgment.VariableHeader.ReturnCode
@@ -38,7 +35,7 @@ data class ConnectionAcknowledgment(val header: VariableHeader = VariableHeader(
     override val connectionReason: String = header.connectReason.name
 
     override fun variableHeader(writeBuffer: WriteBuffer) = header.serialize(writeBuffer)
-    override fun remainingLength() = 2u
+    override fun remainingLength() = 2
 
     /**
      * The Variable Header of the CONNACK Packet contains the following fields in the order: Connect Acknowledge Flags,

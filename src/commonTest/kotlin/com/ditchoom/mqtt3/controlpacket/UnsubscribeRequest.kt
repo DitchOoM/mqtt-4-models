@@ -1,8 +1,7 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
-
 package com.ditchoom.mqtt3.controlpacket
 
-import com.ditchoom.buffer.allocateNewBuffer
+import com.ditchoom.buffer.PlatformBuffer
+import com.ditchoom.buffer.allocate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -11,7 +10,7 @@ class UnsubscribeRequestTests {
 
     @Test
     fun basicTest() {
-        val buffer = allocateNewBuffer(17u)
+        val buffer = PlatformBuffer.allocate(17)
         val unsub = UnsubscribeRequest(packetIdentifier, setOf("yolo", "yolo1"))
         unsub.serialize(buffer)
         buffer.resetForRead()

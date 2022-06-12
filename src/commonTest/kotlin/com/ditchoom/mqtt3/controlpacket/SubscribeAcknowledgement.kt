@@ -1,8 +1,7 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
-
 package com.ditchoom.mqtt3.controlpacket
 
-import com.ditchoom.buffer.allocateNewBuffer
+import com.ditchoom.buffer.PlatformBuffer
+import com.ditchoom.buffer.allocate
 import com.ditchoom.mqtt.controlpacket.format.ReasonCode.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -12,7 +11,7 @@ class SubscribeAcknowledgementTests {
 
     @Test
     fun successMaxQos0() {
-        val buffer = allocateNewBuffer(5u)
+        val buffer = PlatformBuffer.allocate(5)
         val payload = GRANTED_QOS_0
         val puback = SubscribeAcknowledgement(packetIdentifier, listOf(payload))
         puback.serialize(buffer)
@@ -26,7 +25,7 @@ class SubscribeAcknowledgementTests {
     fun grantedQos1() {
         val payload = GRANTED_QOS_1
         val puback = SubscribeAcknowledgement(packetIdentifier, listOf(payload))
-        val buffer = allocateNewBuffer(5u)
+        val buffer = PlatformBuffer.allocate(5)
         puback.serialize(buffer)
         buffer.resetForRead()
         val pubackResult = ControlPacketV4.from(buffer) as SubscribeAcknowledgement
@@ -39,7 +38,7 @@ class SubscribeAcknowledgementTests {
     fun grantedQos2() {
         val payload = GRANTED_QOS_2
         val puback = SubscribeAcknowledgement(packetIdentifier, listOf(payload))
-        val buffer = allocateNewBuffer(5u)
+        val buffer = PlatformBuffer.allocate(5)
         puback.serialize(buffer)
         buffer.resetForRead()
         val pubackResult = ControlPacketV4.from(buffer) as SubscribeAcknowledgement
@@ -51,7 +50,7 @@ class SubscribeAcknowledgementTests {
     fun failure() {
         val payload = UNSPECIFIED_ERROR
         val puback = SubscribeAcknowledgement(packetIdentifier, listOf(payload))
-        val buffer = allocateNewBuffer(5u)
+        val buffer = PlatformBuffer.allocate(5)
         puback.serialize(buffer)
         buffer.resetForRead()
         val pubackResult = ControlPacketV4.from(buffer) as SubscribeAcknowledgement

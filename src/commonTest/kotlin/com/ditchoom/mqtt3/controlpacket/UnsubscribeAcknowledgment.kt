@@ -1,8 +1,7 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package com.ditchoom.mqtt3.controlpacket
 
-import com.ditchoom.buffer.allocateNewBuffer
+import com.ditchoom.buffer.PlatformBuffer
+import com.ditchoom.buffer.allocate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -11,7 +10,7 @@ class UnsubscribeAcknowledgmentTests {
 
     @Test
     fun serializeDeserializeDefault() {
-        val buffer = allocateNewBuffer(4u)
+        val buffer = PlatformBuffer.allocate(4)
         val actual = UnsubscribeAcknowledgment(packetIdentifier)
         actual.serialize(buffer)
         buffer.resetForRead()

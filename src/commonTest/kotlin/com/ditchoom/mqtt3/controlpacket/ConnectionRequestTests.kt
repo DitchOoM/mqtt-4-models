@@ -1,8 +1,7 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
-
 package com.ditchoom.mqtt3.controlpacket
 
-import com.ditchoom.buffer.allocateNewBuffer
+import com.ditchoom.buffer.PlatformBuffer
+import com.ditchoom.buffer.allocate
 import com.ditchoom.mqtt.MqttWarning
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.readVariableByteInteger
 import com.ditchoom.mqtt.controlpacket.QualityOfService
@@ -16,7 +15,7 @@ class ConnectionRequestTests {
     @Test
     fun fixedHeaderByte1() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         assertEquals(buffer.readByte(), 0b00010000, "invalid byte 1 on the CONNECT fixed header")
@@ -25,7 +24,7 @@ class ConnectionRequestTests {
     @Test
     fun fixedHeaderRemainingLength() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() //skip first byte
@@ -36,7 +35,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderProtocolNameByte1() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() //skip first byte
@@ -48,7 +47,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderProtocolNameByte2() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() //skip first byte
@@ -62,7 +61,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderProtocolNameByte3() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() //skip first byte
@@ -77,7 +76,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderProtocolNameByte4() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() //skip first byte
@@ -93,7 +92,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderProtocolNameByte5() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() //skip first byte
@@ -110,7 +109,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderProtocolNameByte6() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -128,7 +127,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderProtocolVersionByte7() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -147,7 +146,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderConnectFlagsByte8AllFalse() {
         val connectionRequest = ConnectionRequest(VariableHeader(willQos = AT_MOST_ONCE))
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -187,7 +186,7 @@ class ConnectionRequestTests {
             VariableHeader(willQos = AT_MOST_ONCE, hasUserName = true),
             ConnectionRequest.Payload(userName = "yolo")
         )
-        val buffer = allocateNewBuffer(20u)
+        val buffer = PlatformBuffer.allocate(20)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -227,7 +226,7 @@ class ConnectionRequestTests {
             VariableHeader(willQos = AT_MOST_ONCE, hasPassword = true),
             ConnectionRequest.Payload(password = "yolo")
         )
-        val buffer = allocateNewBuffer(20u)
+        val buffer = PlatformBuffer.allocate(20)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         val actual = ControlPacketV4.from(buffer)
@@ -277,7 +276,7 @@ class ConnectionRequestTests {
     fun variableHeaderConnectFlagsByte8HasWillRetain() {
         val vh = VariableHeader(willQos = AT_MOST_ONCE, willRetain = true)
         val connectionRequest = ConnectionRequest(vh)
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -315,7 +314,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderConnectFlagsByte8HasQos1() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -356,7 +355,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderConnectFlagsByte8HasQos2() {
         val connectionRequest = ConnectionRequest(VariableHeader(willQos = EXACTLY_ONCE))
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -397,7 +396,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderConnectFlagsByte8HasWillFlag() {
         val connectionRequest = ConnectionRequest(VariableHeader(willQos = AT_MOST_ONCE, willFlag = true))
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -434,7 +433,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderConnectFlagsByte8HasCleanStart() {
         val connectionRequest = ConnectionRequest(VariableHeader(willQos = AT_MOST_ONCE, cleanSession = true))
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -472,7 +471,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderKeepAliveDefault() {
         val connectionRequest = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -493,7 +492,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderKeepAlive0() {
         val connectionRequest = ConnectionRequest(VariableHeader(keepAliveSeconds = 0))
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -515,7 +514,7 @@ class ConnectionRequestTests {
     @Test
     fun variableHeaderKeepAliveMax() {
         val connectionRequest = ConnectionRequest(VariableHeader(keepAliveSeconds = UShort.MAX_VALUE.toInt()))
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         connectionRequest.serialize(buffer)
         buffer.resetForRead()
         buffer.readByte() // skip the first byte
@@ -536,7 +535,7 @@ class ConnectionRequestTests {
     @Test
     fun packetDefault() {
         val request = ConnectionRequest()
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         request.serialize(buffer)
         buffer.resetForRead()
         val requestDeserialized = ControlPacketV4.from(buffer)
@@ -546,7 +545,7 @@ class ConnectionRequestTests {
     @Test
     fun packetQos0() {
         val request = ConnectionRequest(VariableHeader(willQos = AT_MOST_ONCE))
-        val buffer = allocateNewBuffer(14u)
+        val buffer = PlatformBuffer.allocate(14)
         request.serialize(buffer)
         buffer.resetForRead()
         val requestDeserialized = ControlPacketV4.from(buffer)

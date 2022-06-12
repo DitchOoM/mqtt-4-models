@@ -1,10 +1,7 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
-
 package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.*
 import com.ditchoom.mqtt.MalformedPacketException
-import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.readMqttUtf8StringNotValidatedSized
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.writeMqttUtf8String
 import com.ditchoom.mqtt.controlpacket.IPublishMessage
@@ -22,7 +19,7 @@ import com.ditchoom.mqtt.topic.Name
 data class PublishMessage(
     val fixed: FixedHeader = FixedHeader(),
     val variable: VariableHeader,
-    val payload: ParcelablePlatformBuffer? = null
+    val payload: PlatformBuffer? = null
 ) : ControlPacketV4(3, DirectionOfFlow.BIDIRECTIONAL, fixed.flags), IPublishMessage {
 
     init {
@@ -212,10 +209,10 @@ data class PublishMessage(
             }
         }
 
-        fun size(): UInt {
-            var size = topicName.utf8Length().toUInt() + UShort.SIZE_BYTES.toUInt()
+        fun size(): Int {
+            var size = topicName.utf8Length() + UShort.SIZE_BYTES
             if (packetIdentifier != null) {
-                size += 2u
+                size += 2
             }
             return size
         }
@@ -232,29 +229,29 @@ data class PublishMessage(
         }
     }
 
-    private fun payloadSize(): UInt {
+    private fun payloadSize(): Int {
         if (payload != null) {
             return payload.remaining()
         }
-        return 0u
+        return 0
     }
 
 
     companion object {
-        fun from(buffer: ReadBuffer, byte1: UByte, remainingLength: UInt): PublishMessage {
+        fun from(buffer: ReadBuffer, byte1: UByte, remainingLength: Int): PublishMessage {
             val fixedHeader = FixedHeader.fromByte(byte1)
             val variableHeader = VariableHeader.from(buffer, fixedHeader.qos == AT_MOST_ONCE)
-            var variableSize = 2u + variableHeader.topicName.utf8Length().toUInt()
+            var variableSize = 2 + variableHeader.topicName.utf8Length()
             if (variableHeader.packetIdentifier != null) {
-                variableSize += 2u
+                variableSize += 2
             }
             val size = remainingLength - variableSize
-            val payloadBuffer = if (size > 0u) {
+            val payloadBuffer = if (size > 0) {
                 val array = buffer.readByteArray(size)
-                val payloadBuffer = allocateNewBuffer(size)
+                val payloadBuffer = PlatformBuffer.allocate(size)
                 payloadBuffer.write(array)
                 payloadBuffer.position(0)
-                payloadBuffer.setLimit(size.toInt())
+                payloadBuffer.setLimit(size)
                 payloadBuffer
             } else {
                 null
@@ -270,13 +267,13 @@ data class PublishMessage(
             packetIdentifier: Int? = null
         ) = buildPayload(dup, qos, retain, topicName, packetIdentifier)
 
-        inline fun buildPayload(
+        fun buildPayload(
             dup: Boolean = false,
             qos: QualityOfService = AT_MOST_ONCE,
             retain: Boolean = false,
             topicName: CharSequence = "",
             packetIdentifier: Int? = null,
-            payload: ParcelablePlatformBuffer? = null
+            payload: PlatformBuffer? = null
         ): PublishMessage {
             val fixed = FixedHeader(dup, qos, retain)
             val variable = VariableHeader(topicName, packetIdentifier)

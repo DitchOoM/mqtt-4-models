@@ -1,17 +1,14 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
-import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IUnsubscribeAcknowledgment
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 
 @Parcelize
 data class UnsubscribeAcknowledgment(override val packetIdentifier: Int) :
     ControlPacketV4(11, DirectionOfFlow.SERVER_TO_CLIENT), IUnsubscribeAcknowledgment {
-    override fun remainingLength() = 2u
+    override fun remainingLength() = 2
 
     override fun variableHeader(writeBuffer: WriteBuffer) {
         writeBuffer.write(packetIdentifier.toUShort())

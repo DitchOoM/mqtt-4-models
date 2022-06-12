@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "KDocUnresolvedReference")
-
 package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
@@ -34,14 +32,14 @@ abstract class ControlPacketV4(
 
         fun from(buffer: ReadBuffer) = fromTyped<Unit, Unit>(buffer)
 
-        fun from(buffer: ReadBuffer, byte1: UByte, remainingLength: UInt) =
+        fun from(buffer: ReadBuffer, byte1: UByte, remainingLength: Int) =
             fromTyped<Unit, Unit>(buffer, byte1, remainingLength)
 
 
         inline fun <reified WillPayload : Any, reified PublishPayload : Any> fromTyped(
             buffer: ReadBuffer,
             byte1: UByte,
-            remainingLength: UInt
+            remainingLength: Int
         ): ControlPacketV4 {
             val byte1AsUInt = byte1.toUInt()
             val packetValue = byte1AsUInt.shr(4).toInt()

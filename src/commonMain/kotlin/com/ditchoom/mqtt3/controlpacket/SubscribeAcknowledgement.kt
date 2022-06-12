@@ -1,11 +1,8 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_OVERRIDE")
-
 package com.ditchoom.mqtt3.controlpacket
 
 import com.ditchoom.buffer.ReadBuffer
 import com.ditchoom.buffer.WriteBuffer
 import com.ditchoom.mqtt.MalformedPacketException
-import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.ControlPacket.Companion.variableByteSize
 import com.ditchoom.mqtt.controlpacket.ISubscribeAcknowledgement
 import com.ditchoom.mqtt.controlpacket.format.ReasonCode
@@ -23,7 +20,7 @@ import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 @Parcelize
 data class SubscribeAcknowledgement(override val packetIdentifier: Int, val payload: List<ReasonCode>) :
     ControlPacketV4(9, DirectionOfFlow.SERVER_TO_CLIENT), ISubscribeAcknowledgement {
-    override fun remainingLength() = 2u + payload.size.toUInt()
+    override fun remainingLength() = 2 + payload.size
     override fun variableHeader(writeBuffer: WriteBuffer) {
         writeBuffer.write(packetIdentifier.toUShort())
     }
@@ -34,10 +31,10 @@ data class SubscribeAcknowledgement(override val packetIdentifier: Int, val payl
 
     companion object {
 
-        fun from(buffer: ReadBuffer, remainingLength: UInt): SubscribeAcknowledgement {
+        fun from(buffer: ReadBuffer, remainingLength: Int): SubscribeAcknowledgement {
             val packetIdentifier = buffer.readUnsignedShort()
             val returnCodes = mutableListOf<ReasonCode>()
-            while (returnCodes.size.toUInt() < remainingLength - variableByteSize(remainingLength) - 1u) {
+            while (returnCodes.size < remainingLength - variableByteSize(remainingLength) - 1) {
                 val reasonCode = when (val reasonCodeByte = buffer.readUnsignedByte()) {
                     GRANTED_QOS_0.byte -> GRANTED_QOS_0
                     GRANTED_QOS_1.byte -> GRANTED_QOS_1

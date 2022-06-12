@@ -1,6 +1,5 @@
 package com.ditchoom.mqtt3.controlpacket
 
-import com.ditchoom.mqtt3.controlpacket.Parcelize
 import com.ditchoom.mqtt.controlpacket.IPingResponse
 import com.ditchoom.mqtt.controlpacket.format.fixed.DirectionOfFlow
 
